@@ -1,3 +1,4 @@
+import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Music, Users, Share2, Headphones, Disc3 } from "lucide-react";
@@ -7,16 +8,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="px-6 py-4 border-b flex justify-between items-center">
-        <div className="flex items-center space-x-3">
-          <Disc3 className="text-primary" size={32} />
-          <h1 className="text-2xl font-bold">MyTrack</h1>
-        </div>
-        <div className="space-x-4">
-          <Button variant="ghost">Login</Button>
-          <Button>Get Started</Button>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <main className="container mx-auto px-6 grid md:grid-cols-2 items-center gap-12 py-16">
