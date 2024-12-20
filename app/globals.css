@@ -58,3 +58,58 @@
     --chart-5: 340 75% 55%;
   }
 }
+
+.bg-pattern {
+  background-color: hsl(var(--background));
+  opacity: 0.7;
+  background-image: linear-gradient(
+      30deg,
+      #7c3aed 12%,
+      transparent 12.5%,
+      transparent 87%,
+      #7c3aed 87.5%,
+      #7c3aed
+    ),
+    linear-gradient(
+      150deg,
+      #7c3aed 12%,
+      transparent 12.5%,
+      transparent 87%,
+      #7c3aed 87.5%,
+      #7c3aed
+    ),
+    linear-gradient(
+      30deg,
+      #7c3aed 12%,
+      transparent 12.5%,
+      transparent 87%,
+      #7c3aed 87.5%,
+      #7c3aed
+    ),
+    linear-gradient(
+      150deg,
+      #7c3aed 12%,
+      transparent 12.5%,
+      transparent 87%,
+      #7c3aed 87.5%,
+      #7c3aed
+    ),
+    linear-gradient(
+      60deg,
+      #7c3aed77 25%,
+      transparent 25.5%,
+      transparent 75%,
+      #7c3aed77 75%,
+      #7c3aed77
+    ),
+    linear-gradient(
+      60deg,
+      #7c3aed77 25%,
+      transparent 25.5%,
+      transparent 75%,
+      #7c3aed77 75%,
+      #7c3aed77
+    );
+  background-size: 32px 56px;
+  background-position: 0 0, 0 0, 16px 28px, 16px 28px, 0 0, 16px 28px;
+}

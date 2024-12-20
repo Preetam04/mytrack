@@ -29,7 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${manrope.style} ${manrope.className} `}>
+      <body
+        className={`${manrope.style.fontFamily} ${manrope.className} bg-background`}
+      >
         <Providers>{children}</Providers>
       </body>
     </html>
