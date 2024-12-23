@@ -19,7 +19,19 @@ model User {
   name     String?
   password String?
   provider Providers
+  spaces   Space[] @relation("hostedBy")
 }
+
+model Space {
+  id    String    @id @default(uuid())
+  name  String    
+  created DateTime  @default(now())
+  hostId  String
+  host    User     @relation("hostedBy", fields: [hostId], references: [id])
+  isActive  Boolean   @default(false)
+}
+
+
 
 enum Providers {
   Google

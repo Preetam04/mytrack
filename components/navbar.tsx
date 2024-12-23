@@ -20,7 +20,7 @@ export default function Navbar() {
       <div className="space-x-4 flex items-center">
         {/* <Button variant="ghost">Login</Button> */}
 
-        {session ? (
+        {session.data?.user ? (
           <Button
             size={"icon"}
             variant={"outline"}
