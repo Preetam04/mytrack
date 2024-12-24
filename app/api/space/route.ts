@@ -172,3 +172,85 @@ export async function DELETE(req: NextRequest) {
     });
   }
 }
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user.id) {
+      return NextResponse.json(
+        {
+          message: "You must be logged in to create a space",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    const { spaceId, isActive } = await req.json();
+    console.log(spaceId, isActive);
+
+    if (!spaceId) {
+      return NextResponse.json(
+        {
+          message: "Space Id is Required",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const space = await prisma.space.findUnique({
+      where: {
+        id: spaceId,
+      },
+    });
+
+    if (!space) {
+      return NextResponse.json(
+        {
+          message: "Space not found",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    if (space?.hostId !== session.user.id) {
+      return NextResponse.json(
+        {
+          message: "You are not allowed the update the space data",
+        },
+        {
+          status: 403,
+        }
+      );
+    }
+
+    const updatedSpace = await prisma.space.update({
+      where: {
+        id: spaceId,
+      },
+      data: {
+        isActive: isActive,
+      },
+    });
+
+    return NextResponse.json(
+      {
+        message: "Space is Active",
+        space: updatedSpace,
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (e) {
+    console.log(e);
+    return NextResponse.json({
+      message: `Error updating streams`,
+    });
+  }
+}

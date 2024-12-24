@@ -14,13 +14,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 
 function timeAgo(dateString: string) {
   const date = new Date(dateString);
   const now = new Date();
-  const seconds = Math.floor((now - date) / 1000);
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
   const intervals = {
     year: 31536000,
@@ -53,8 +53,17 @@ export default function RoomsCard({
   const deleteSpace = async () => {
     await axios.delete(`/api/space/?spaceId=${data.id}`);
     // console.log(response.data);
-    // deleteCloseRef.current?.click();
+    deleteCloseRef.current?.click();
     getSpaces();
+  };
+
+  const [switchActive, setSwitchActive] = useState<boolean>(data.isActive);
+  const setSpaceActive = async (active: boolean) => {
+    const resp = await axios.patch("/api/space", {
+      spaceId: data.id,
+      isActive: active,
+    });
+    console.log(resp.data);
   };
 
   return (
@@ -78,24 +87,30 @@ export default function RoomsCard({
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                  <DialogTitle>Delete Space {data.name}</DialogTitle>
+                  <DialogTitle>
+                    Delete Space &quot;{data.name}&quot;
+                  </DialogTitle>
                   <DialogDescription>
-                    Are your sure you want to delete {data.name}?
+                    Are your sure you want to delete &quot;{data.name}&quot;?
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                  <DialogClose className="gap-4 flex items-center">
-                    <Button ref={deleteCloseRef} variant={"secondary"}>
+                  <DialogClose asChild>
+                    <Button
+                      type="button"
+                      ref={deleteCloseRef}
+                      variant="secondary"
+                    >
                       Close
                     </Button>
-                    <Button
-                      type="submit"
-                      variant={"destructive"}
-                      onClick={deleteSpace}
-                    >
-                      Delete
-                    </Button>
                   </DialogClose>
+                  <Button
+                    type="submit"
+                    variant={"destructive"}
+                    onClick={deleteSpace}
+                  >
+                    Delete
+                  </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -111,7 +126,14 @@ export default function RoomsCard({
           <div className="flex justify-between gap-4">
             <div className="flex items-center gap-3">
               <Label>Active</Label>
-              <Switch />
+              <Switch
+                checked={switchActive}
+                onCheckedChange={(e) => {
+                  // console.log(e);
+                  setSwitchActive((prev) => !prev);
+                  setSpaceActive(e);
+                }}
+              />
             </div>
             <Button size={"default"} className="">
               Join

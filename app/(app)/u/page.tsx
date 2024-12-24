@@ -25,7 +25,7 @@ export type TSpace = {
   createdAt: string;
   hostId: string;
   name: string;
-  isActive: false;
+  isActive: boolean;
 };
 
 export default function Dashboard() {
@@ -50,7 +50,7 @@ export default function Dashboard() {
       });
       return;
     }
-    const response = await axios.post("/api/space", {
+    await axios.post("/api/space", {
       spaceName,
     });
     // console.log(response.data);
