@@ -1,5 +1,4 @@
 import Navbar from "@/components/navbar";
-import { Disc3 } from "lucide-react";
 import React from "react";
 
 export default function DashboardLayout({

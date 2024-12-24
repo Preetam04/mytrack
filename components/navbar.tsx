@@ -1,15 +1,13 @@
-"use client";
-
 import { Disc3, User } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { Button } from "./ui/button";
-import DarkModeBtn from "./dark-mode-btn";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
+import DarkModeBtn from "./dark-mode-btn";
+import { Button } from "./ui/button";
+import { getServerSession } from "next-auth";
+import authOptions from "@/lib/auth-options";
 
-export default function Navbar() {
-  const router = useRouter();
-
-  const session = useSession();
+export default async function Navbar() {
+  const session = await getServerSession(authOptions);
 
   return (
     <nav className="px-6 py-4 border-b flex justify-between items-center">
@@ -20,25 +18,16 @@ export default function Navbar() {
       <div className="space-x-4 flex items-center">
         {/* <Button variant="ghost">Login</Button> */}
 
-        {session.data?.user ? (
-          <Button
-            size={"icon"}
-            variant={"outline"}
-            onClick={() => {
-              router.push("/u");
-            }}
-          >
-            <User />
-          </Button>
+        {session?.user.id ? (
+          <Link href={"/u"}>
+            <Button size={"icon"} variant={"outline"}>
+              <User />
+            </Button>
+          </Link>
         ) : (
-          <Button
-            onClick={() => {
-              // signIn("google");
-              router.push("/auth");
-            }}
-          >
-            Get Started
-          </Button>
+          <Link href={"/auth"}>
+            <Button>Get Started</Button>
+          </Link>
         )}
         <DarkModeBtn />
       </div>

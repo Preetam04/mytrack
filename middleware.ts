@@ -12,14 +12,14 @@ export default async function middleware(request: NextRequest) {
 
   const pathSegments = request.nextUrl.pathname.split("/");
 
-  if (!isAuthenticated && pathSegments[1] === "u") {
+  if (!isAuthenticated && pathSegments[1] === "space") {
     const loginPath = "/auth";
     const loginURL = new URL(loginPath, request.nextUrl.origin);
     return NextResponse.redirect(loginURL);
   }
 
   if (isAuthenticated && pathSegments[1] === "auth") {
-    const newURL = new URL("/u", request.nextUrl.origin);
+    const newURL = new URL("/space", request.nextUrl.origin);
     return NextResponse.redirect(newURL);
   }
 

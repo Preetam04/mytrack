@@ -25,7 +25,7 @@ model User {
 model Space {
   id    String    @id @default(uuid())
   name  String    
-  created DateTime  @default(now())
+  createdAt DateTime  @default(now())
   hostId  String
   host    User     @relation("hostedBy", fields: [hostId], references: [id])
   isActive  Boolean   @default(false)

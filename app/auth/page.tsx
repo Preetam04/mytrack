@@ -31,7 +31,6 @@ export default function AuthPage() {
   });
 
   function onSubmit(values: authFormType) {
-    console.log(values);
     signIn("credentials", values);
   }
 
