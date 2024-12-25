@@ -19,19 +19,44 @@ model User {
   name     String?
   password String?
   provider Providers
-  spaces   Space[] @relation("hostedBy")
+  spaces   Space[]   @relation("hostedBy")
+  streams  Stream[]  @relation("added")
+  upvote   Upvote[]
 }
 
 model Space {
-  id    String    @id @default(uuid())
-  name  String    
-  createdAt DateTime  @default(now())
-  hostId  String
-  host    User     @relation("hostedBy", fields: [hostId], references: [id])
-  isActive  Boolean   @default(false)
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  hostId    String
+  host      User     @relation("hostedBy", fields: [hostId], references: [id])
+  isActive  Boolean  @default(false)
+  streams   Stream[] @relation("spaceStreams")
 }
 
+model Stream {
+  id          String   @id @default(uuid())
+  name        String
+  videoId     String
+  thumbnail   String
+  addedBy     String
+  addedByUser User     @relation("added", fields: [addedBy], references: [id])
+  spaceId     String
+  upvote      Upvote[]
+  space       Space    @relation("spaceStreams", fields: [spaceId], references: [id])
+  createdAt   DateTime @default(now())
+  played      Boolean  @default(false)
+}
 
+model Upvote {
+  id       String @id @default(uuid())
+  userId   String
+  streamId String
+  user     User   @relation(fields: [userId], references: [id])
+  stream   Stream @relation(fields: [streamId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, streamId])
+}
 
 enum Providers {
   Google

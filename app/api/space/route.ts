@@ -5,6 +5,41 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
+    const url = new URL(req.nextUrl.href);
+
+    if (url.searchParams.get("spaceId")) {
+      const spaceData = await prisma.space.findUnique({
+        where: {
+          id: url.searchParams.get("spaceId") ?? "",
+        },
+        include: {
+          streams: true,
+          host: true,
+        },
+      });
+
+      // console.log(spaceData);
+
+      if (!spaceData) {
+        return NextResponse.json(
+          {
+            message: "Space not found",
+          },
+          {
+            status: 403,
+          }
+        );
+      }
+
+      return NextResponse.json(
+        {
+          message: "Space data fetched successfully",
+          spaces: spaceData,
+        },
+        { status: 200 }
+      );
+    }
+
     const session = await getServerSession(authOptions);
     if (!session?.user.id) {
       return NextResponse.json(
@@ -250,7 +285,7 @@ export async function PATCH(req: NextRequest) {
   } catch (e) {
     console.log(e);
     return NextResponse.json({
-      message: `Error updating streams`,
+      message: `Error updating space`,
     });
   }
 }

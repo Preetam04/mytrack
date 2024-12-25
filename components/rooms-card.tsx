@@ -1,9 +1,9 @@
 import { TSpace } from "@/app/(app)/u/page";
+import axios from "axios";
 import { Clock, Share2, SquareArrowOutUpRight, Trash2 } from "lucide-react";
+import { useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Label } from "./ui/label";
-import { Switch } from "./ui/switch";
 import {
   Dialog,
   DialogClose,
@@ -14,8 +14,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { useRef, useState } from "react";
-import axios from "axios";
+import { Label } from "./ui/label";
+import { Switch } from "./ui/switch";
+import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 function timeAgo(dateString: string) {
   const date = new Date(dateString);
@@ -66,6 +68,16 @@ export default function RoomsCard({
     console.log(resp.data);
   };
 
+  const toast = useToast();
+
+  const copyLink = () => {
+    const baseUrl = window.location.origin;
+    navigator.clipboard.writeText(`${baseUrl}/space/${data.id}`);
+    toast.toast({
+      title: "Space url copied to clipboard",
+    });
+  };
+
   return (
     <Card className="hover:shadow-lg transition-shadow w-full max-w-80">
       <CardHeader>
@@ -75,7 +87,13 @@ export default function RoomsCard({
           </CardTitle>
 
           <div className="flex items-center">
-            <Button variant="ghost" size="icon">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                copyLink();
+              }}
+            >
               <Share2 className="h-4 w-4" />
             </Button>
 
@@ -135,10 +153,12 @@ export default function RoomsCard({
                 }}
               />
             </div>
-            <Button size={"default"} className="">
-              Join
-              <SquareArrowOutUpRight />{" "}
-            </Button>
+            <Link href={`/space/${data.id}`}>
+              <Button size={"default"} className="">
+                Join
+                <SquareArrowOutUpRight />{" "}
+              </Button>
+            </Link>
           </div>
         </div>
       </CardContent>
