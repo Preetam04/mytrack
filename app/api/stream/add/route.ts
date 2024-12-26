@@ -1,26 +1,25 @@
 import authOptions from "@/lib/auth-options";
 import { prisma } from "@/lib/db";
+import { youtubePattern } from "@/lib/utils";
 import { getYTData } from "@/lib/ytData";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-
-const youtubePattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
 
 // Check if the URL matches the YouTube pattern
 
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    // if (!session?.user.id) {
-    //   return NextResponse.json(
-    //     {
-    //       message: "You must be logged in to create a space",
-    //     },
-    //     {
-    //       status: 401,
-    //     }
-    //   );
-    // }
+    if (!session?.user.id) {
+      return NextResponse.json(
+        {
+          message: "You must be logged in to create a space",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
 
     const data = await req.json();
 
@@ -148,7 +147,7 @@ export async function POST(req: NextRequest) {
       }
     );
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     return NextResponse.json({
       message: `Error Adding streams`,
     });

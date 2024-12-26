@@ -13,7 +13,11 @@ export async function GET(req: NextRequest) {
           id: url.searchParams.get("spaceId") ?? "",
         },
         include: {
-          streams: true,
+          streams: {
+            include: {
+              upvote: true,
+            },
+          },
           host: true,
         },
       });
