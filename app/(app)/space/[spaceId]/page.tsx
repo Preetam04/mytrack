@@ -1,6 +1,8 @@
 "use client";
 
 import AddStream from "@/components/add-stream";
+import Player from "@/components/player";
+import Queue from "@/components/queue";
 import QueueItem from "@/components/queue-item";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,11 +13,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { StreamContext } from "@/context/stream-context";
 import axios from "axios";
 import { ChevronUp, Disc3 } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 export type TUpvote = {
   id: string;
@@ -36,7 +39,7 @@ export type TStream = {
 };
 
 // Host type
-type THost = {
+export type THost = {
   id: string;
   email: string;
   name: string;
@@ -45,7 +48,7 @@ type THost = {
 };
 
 // Main Space type
-type Space = {
+export type Space = {
   id: string;
   name: string;
   createdAt: string;
@@ -58,13 +61,15 @@ type Space = {
 export default function Space() {
   const { spaceId } = useParams();
   const [loading, setLoading] = useState(true);
-  const [spaceData, setSpaceData] = useState<Space | null>(null);
+  // const [spaceData, setSpaceData] = useState<Space | null>(null);
+
+  const { space, setSpace } = useContext(StreamContext);
 
   const getData = async () => {
     try {
       const resp = await axios.get(`/api/space/?spaceId=${spaceId}`);
 
-      setSpaceData(resp.data.spaces);
+      setSpace(resp.data.spaces);
     } catch (e) {
       console.log(e);
     }
@@ -76,7 +81,12 @@ export default function Space() {
       const resp = await axios.get(`/api/space/?spaceId=${spaceId}`);
 
       console.log(resp.data.spaces);
-      setSpaceData(resp.data.spaces);
+      setSpace({
+        ...resp.data.spaces,
+        streams: resp.data.spaces.streams?.sort(
+          (a: TStream, b: TStream) => b.upvote.length - a.upvote.length
+        ),
+      });
     } catch (e) {
       console.log(e);
     }
@@ -89,13 +99,13 @@ export default function Space() {
     getSpaceData();
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getData();
-    }, 5000);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     getData();
+  //   }, 5000);
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   if (loading)
     return (
@@ -162,57 +172,25 @@ export default function Space() {
   // };
 
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <div className="w-full">
-        <h1 className="text-3xl capitalize font-semibold">{spaceData?.name}</h1>
+        <h1 className="text-3xl capitalize font-semibold">{space?.name}</h1>
         <p className="text-sm opacity-65">
           Host:{" "}
-          <span>
-            {spaceData?.host.name || spaceData?.host.email.split("@")[0]}
-          </span>
+          <span>{space?.host.name || space?.host.email.split("@")[0]}</span>
         </p>
       </div>
-      <div className="w-full flex items-start gap-4 mt-5">
-        <div className="w-full max-w-[640px]">
-          <AddStream />
-          <Card className="w-full mt-3">
-            <CardHeader>
-              <CardTitle className="text-2xl">Queue</CardTitle>
-            </CardHeader>
-
-            <CardContent>
-              <ScrollArea className="h-[17rem]">
-                <div className="space-y-2 mr-3">
-                  {spaceData?.streams
-                    .sort((a, b) => b.upvote.length - a.upvote.length)
-                    .map((ele) => (
-                      <QueueItem data={ele} key={ele.id} />
-                    ))}
-                </div>
-              </ScrollArea>
-            </CardContent>
-
-            <CardFooter></CardFooter>
-          </Card>
-        </div>
-        <div className="w-full max-w-2xl ">
+      <div className="w-full flex items-start gap-4  mt-4">
+        <Queue />
+        {/* player */}
+        <div className="w-full max-w-2xl aspect-video ">
           <Card className="">
-            <CardHeader>
+            <CardHeader className="relative">
               <CardTitle className="text-2xl">Currently Playing</CardTitle>
+              <Button className="absolute right-6 top-4">Next Song</Button>
             </CardHeader>
             <CardContent>
-              <div className="">
-                <Image
-                  src={spaceData?.streams[1].thumbnail ?? ""}
-                  alt="current-thumbnail"
-                  className="w-full rounded-md"
-                  width={540}
-                  height={360 / 2}
-                />
-                <h3 className="text-xl mt-2 font-semibold ">
-                  {spaceData?.streams[1].name}
-                </h3>
-              </div>
+              <Player />
             </CardContent>
           </Card>
         </div>
