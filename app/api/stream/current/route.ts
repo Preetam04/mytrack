@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function PATCH(req: NextRequest) {
   try {
     // const session = await getServerSession(authOptions);
 
@@ -69,10 +69,12 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    console.log(currentStreamExists);
+
     if (currentStreamExists) {
       const updateCurrentStream = await prisma.currentStream.update({
         where: {
-          spaceId: currentStreamExists.id,
+          id: currentStreamExists.id,
         },
         data: {
           streamId: streamExists.id,
@@ -82,7 +84,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           message: "Current Stream updated",
-          updateCurrentStream,
+          currentStream: updateCurrentStream,
         },
         {
           status: 200,

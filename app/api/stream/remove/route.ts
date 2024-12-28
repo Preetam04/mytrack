@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
+export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ spaceId: string }> }
 ) {
@@ -21,13 +21,16 @@ export async function GET(
     //   );
     // }
 
-    const { spaceId } = await params;
-    console.log(spaceId);
+    const url = new URL(req.nextUrl);
+    const streamId = url.searchParams.get("streamId");
+    const spaceId = url.searchParams.get("spaceId");
+
+    console.log(streamId, spaceId);
 
     if (!spaceId) {
-      return NextResponse.json(
+      NextResponse.json(
         {
-          message: "Space Id is required",
+          message: "Space  Id required",
         },
         {
           status: 404,
@@ -35,36 +38,27 @@ export async function GET(
       );
     }
 
-    const spaceExists = await prisma.space.findUnique({
-      where: {
-        id: spaceId,
-      },
-    });
-
-    if (!spaceExists) {
+    if (!streamId) {
       return NextResponse.json(
         {
-          message: "Space not found",
+          message: "Stream Id required",
         },
         {
-          status: 403,
+          status: 400,
         }
       );
     }
 
-    const currentStream = await prisma.currentStream.findUnique({
+    await prisma.stream.delete({
       where: {
-        spaceId: spaceId,
-      },
-      include: {
-        stream: true,
+        id: streamId,
+        spaceId: spaceId ?? "",
       },
     });
 
     return NextResponse.json(
       {
-        message: "Current Stream fetched successfully",
-        currentStream,
+        message: "Song removed successfully",
       },
       {
         status: 200,

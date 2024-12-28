@@ -63,7 +63,7 @@ export default function Space() {
   const [loading, setLoading] = useState(true);
   // const [spaceData, setSpaceData] = useState<Space | null>(null);
 
-  const { space, setSpace } = useContext(StreamContext);
+  const { space, setSpace, changeCurrentStream } = useContext(StreamContext);
 
   const getData = async () => {
     try {
@@ -80,7 +80,6 @@ export default function Space() {
     try {
       const resp = await axios.get(`/api/space/?spaceId=${spaceId}`);
 
-      console.log(resp.data.spaces);
       setSpace({
         ...resp.data.spaces,
         streams: resp.data.spaces.streams?.sort(
@@ -187,7 +186,12 @@ export default function Space() {
           <Card className="">
             <CardHeader className="relative">
               <CardTitle className="text-2xl">Currently Playing</CardTitle>
-              <Button className="absolute right-6 top-4">Next Song</Button>
+              <Button
+                className="absolute right-6 top-4"
+                onClick={changeCurrentStream}
+              >
+                Next Song
+              </Button>
             </CardHeader>
             <CardContent>
               <Player />

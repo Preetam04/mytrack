@@ -11,7 +11,7 @@ export default function QueueItem({ data }: { data: TStream }) {
 
   const vote = async () => {
     try {
-      const resp = await axios.post("http://localhost:3000/api/stream/vote", {
+      await axios.post("http://localhost:3000/api/stream/vote", {
         streamId: data.id,
       });
     } catch (error) {

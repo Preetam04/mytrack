@@ -15,7 +15,7 @@ import { StreamContext } from "@/context/stream-context";
 
 function Queue() {
   // console.log(data);
-  const { space } = useContext(StreamContext);
+  const { space, currentStream } = useContext(StreamContext);
 
   return (
     <div className="w-full max-w-[500px] h-full ">
@@ -29,6 +29,7 @@ function Queue() {
           <ScrollArea className="h-[32rem]  rounded-md ">
             <div className="space-y-2 pr-2">
               {space?.streams
+                .filter((ele) => ele.id !== currentStream?.id)
                 .sort((a, b) => b.upvote.length - a.upvote.length)
                 .map((ele) => (
                   <QueueItem data={ele} key={ele.id} />

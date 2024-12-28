@@ -15,10 +15,13 @@ export async function getYTData(link: string) {
     });
 
     const temp = response.data.items[0];
+    console.log(temp.snippet.thumbnails);
 
     const data = {
       title: temp.snippet.title,
-      thumbnail: temp.snippet.thumbnails.maxres.url,
+      thumbnail:
+        temp.snippet.thumbnails?.maxres?.url ||
+        temp.snippet.thumbnails?.standard?.url,
     };
 
     return data;
